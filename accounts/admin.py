@@ -1,13 +1,29 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 
-class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('email', 'is_staff', 'is_active', 'date_joined')
-    search_fields = ('email',)
-    readonly_fields = ('date_joined', 'last_login')
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    list_display = ["email", "fullname", "phone", "is_active"]
+    ordering = ["email"]
+    
+    fieldsets = (
+        (None, {"fields": ("email", "fullname", "phone", "password")}),
+        ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser")}),
+        ("Important dates", {"fields": ("last_login",)}),
+    )
 
-    filter_horizontal = ()
-    list_filter = ()
-    fieldsets = ()
+    add_fieldsets = (
+        (None, {
+            "classes": ("wide",),
+            "fields": ("email", "fullname", "phone", "password1", "password2", "is_staff", "is_superuser"),
+        }),
+    )
+
+    search_fields = ["email", "fullname", "phone"]
+    ordering = ["email"]
+    
+    # ✅ Fix list_filter (Use a tuple instead of a list)
+    list_filter = ("is_staff", "is_superuser", "is_active")
 
 admin.site.register(CustomUser, CustomUserAdmin)

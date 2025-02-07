@@ -1,0 +1,25 @@
+/* Importing a font family suitable for an ecommerce site */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Defining color variables */
+:root {
+    --color-secondary: #FFFFFF;
+    --color-coffee: #6F4E37;
+    --color-primary:#0f7c0f;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.btn-primary {
+    background-color: var(--color-primary) !important;
+    color: var(--color-secondary);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.text-primary {
+    color: var(--color-primary) !important;
+}

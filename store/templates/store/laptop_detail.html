@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ laptop.brand }} {{ laptop.model }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-4">
+        <a href="{% url 'laptop_list' %}" class="btn btn-secondary mb-3">
+            <i class="bx bx-arrow-back"></i> Back to Listings
+        </a>
+        <div class="card shadow">
+            <div class="row g-0">
+                <div class="col-md-6">
+                    {% if laptop.img_1 %}
+                        <img src="{{ laptop.img_1.url }}" class="img-fluid rounded-start" alt="{{ laptop.model }}">
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <div class="card-body">
+                        <h3 class="text-primary">{{ laptop.brand }} {{ laptop.model }}</h3>
+                        <p><strong><i class="bx bx-laptop"></i> Type:</strong> {{ laptop.type }}</p>
+                        <p><strong><i class="bx bx-chip"></i> Processor:</strong> {{ laptop.processor }}</p>
+                        <p><strong><i class="bx bx-memory-card"></i> RAM:</strong> {{ laptop.ram }} (Max: {{ laptop.max_ram_upgrade }})</p>
+                        <p><strong><i class="bx bx-hdd"></i> Storage:</strong> {{ laptop.storage_capacity }} (Max: {{ laptop.max_storage_capacity }})</p>
+                        <p><strong><i class="bx bx-tv"></i> Screen Size:</strong> {{ laptop.screen_size }}</p>
+                        <p><strong><i class="bx bx-battery"></i> Battery:</strong> {{ laptop.battery_backup }} (Health: {{ laptop.battery_health }})</p>
+                        <p><strong><i class="bx bx-desktop"></i> Graphics:</strong> {{ laptop.graphics_type }} ({{ laptop.total_graphics_memory }})</p>
+                        <p><strong><i class="bx bx-check-shield"></i> Condition:</strong> {{ laptop.condition }}</p>
+                        <a href="#" class="btn btn-primary">
+                            <i class="bx bx-cart"></i> Buy Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/boxicons@2.1.1/dist/boxicons.js"></script>
+</body>
+</html>

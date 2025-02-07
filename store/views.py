@@ -1,23 +1,65 @@
-from django.shortcuts import render
-from django.shortcuts import render, redirect
-from .forms import LaptopForm, LaptopImagesFormSet
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Laptop
+from .forms import LaptopForm
+from django.contrib import messages
 
-# Create your views here.
-def upload_laptop(request):
-    if request.method == 'POST':
-        laptop_form = LaptopForm(request.POST, request.FILES)
-        laptop_images_formset = LaptopImagesFormSet(request.POST, request.FILES)
-        
-        if laptop_form.is_valid() and laptop_images_formset.is_valid():
-            laptop = laptop_form.save()
-            laptop_images_formset.instance = laptop
-            laptop_images_formset.save()
-            return redirect('success_url')  # Replace 'success_url' with your success URL
-    else:
-        laptop_form = LaptopForm()
-        laptop_images_formset = LaptopImagesFormSet()
+def laptop_list(request):
+    query = request.GET.get('q')
+    brand_filter = request.GET.get('brand')
+    condition_filter = request.GET.get('condition')
     
-    return render(request, 'upload_laptop.html', {
-        'laptop_form': laptop_form,
-        'laptop_images_formset': laptop_images_formset,
+    laptops = Laptop.objects.all()
+
+    if query:
+        laptops = laptops.filter(model__icontains=query)
+
+    if brand_filter:
+        laptops = laptops.filter(brand=brand_filter)
+
+    if condition_filter:
+        laptops = laptops.filter(condition=condition_filter)
+
+    brands = Laptop.objects.values_list('brand', flat=True).distinct()
+    conditions = Laptop.objects.values_list('condition', flat=True).distinct()
+
+    return render(request, 'store/laptop_list.html', {
+        'laptops': laptops,
+        'brands': brands,
+        'conditions': conditions
     })
+
+
+def laptop_detail(request, pk):
+    laptop = get_object_or_404(Laptop, pk=pk)
+    return render(request, "laptops/laptop_detail.html", {"laptop": laptop})
+
+
+def laptop_create(request):
+    if request.method == "POST":
+        form = LaptopForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Laptop added successfully!")
+            return redirect("laptop_list")
+    else:
+        form = LaptopForm()
+    return render(request, "laptops/laptop_form.html", {"form": form})
+
+
+def laptop_update(request, pk):
+    laptop = get_object_or_404(Laptop, pk=pk)
+    if request.method == "POST":
+        form = LaptopForm(request.POST, request.FILES, instance=laptop)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Laptop updated successfully!")
+            return redirect("laptop_detail", pk=pk)
+    else:
+        form = LaptopForm(instance=laptop)
+    return render(request, "laptops/laptop_form.html", {"form": form})
+
+def laptop_delete(request, pk):
+    laptop = get_object_or_404(Laptop, pk=pk)
+    laptop.delete()
+    messages.success(request, "Laptop deleted successfully!")
+    return redirect("laptop_list")
