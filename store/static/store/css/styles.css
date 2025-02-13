@@ -5,11 +5,14 @@
 :root {
     --color-secondary: #FFFFFF;
     --color-coffee: #6F4E37;
-    --color-primary:#0f7c0f;
+    --color-primary:#078607;
 }
 
 body {
     font-family: 'Roboto', sans-serif;
+}
+.bg-primary {
+    background-color: var(--color-primary) !important;
 }
 
 .btn-primary {
@@ -20,6 +23,70 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
+.btn-primary:hover {
+    transform: scale(1.05) !important;
+    box-shadow: rgb(3, 84, 3) !important;
+}
 .text-primary {
     color: var(--color-primary) !important;
+}
+.text-light {
+    color: var(--color-secondary) !important;
+}
+
+/* From ChatGpt */
+
+/* Smooth fade-in for the whole page */
+body {
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Thumbnail hover effect */
+.img-thumbnail {
+    transition: transform 0.3s ease-in-out;
+}
+
+.img-thumbnail:hover {
+    transform: scale(1.1);
+}
+
+/* Main image fade-in effect */
+#mainImage {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Card hover effect */
+.card {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out !important;
+}
+
+.card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Button animations */
+.btn-primary {
+    transition: all 0.3s ease-in-out !important;
+}
+
+/* Similar products fade-in effect */
+.similar-products {
+    animation: fadeInUp 1s ease-in-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

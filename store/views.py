@@ -30,8 +30,16 @@ def laptop_list(request):
 
 
 def laptop_detail(request, pk):
-    laptop = get_object_or_404(Laptop, pk=pk)
-    return render(request, "laptops/laptop_detail.html", {"laptop": laptop})
+    laptop = get_object_or_404(Laptop, id=pk)
+
+    # Collect all image fields dynamically
+    laptop_images = [getattr(laptop, f'img_{i}') for i in range(1, 7) if getattr(laptop, f'img_{i}')]
+
+    # Get similar products
+    similer_laptops = Laptop.objects.filter(processor=laptop.processor, ram=laptop.ram).exclude(id=pk).order_by('?')[:4]
+
+    return render(request, 'store/laptop_detail.html', {'laptop': laptop, 'laptop_images': laptop_images, 'similer_products': similer_laptops})
+
 
 
 def laptop_create(request):
