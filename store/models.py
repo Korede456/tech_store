@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings
+
 
 # Choices for Laptop Condition
 CONDITION_CHOICES = [
@@ -6,6 +8,7 @@ CONDITION_CHOICES = [
     ("good", "Good"),
     ("fair", "Fair"),
 ]
+
 
 class Laptop(models.Model):
     img_1 = models.ImageField(upload_to="laptop_images/", blank=True, null=True)
@@ -42,9 +45,15 @@ class Laptop(models.Model):
     sd_card_reader = models.BooleanField(default=False)
     usb_ports = models.CharField(max_length=50)
 
-    condition = models.CharField(max_length=20, choices=CONDITION_CHOICES, default="good")
-    price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price in USD")
-    discount = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, help_text="Discount in %")
+    condition = models.CharField(
+        max_length=20, choices=CONDITION_CHOICES, default="good"
+    )
+    price = models.DecimalField(
+        max_digits=10, decimal_places=2, help_text="Price in USD"
+    )
+    discount = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True, help_text="Discount in %"
+    )
     available = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -52,3 +61,25 @@ class Laptop(models.Model):
 
     def __str__(self):
         return f"{self.brand} {self.model} - {self.condition.capitalize()}"
+
+
+class Cart(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Cart - {self.user.email if self.user else 'Guest'}"
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
+    laptop = models.ForeignKey("Laptop", on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def total_price(self):
+        return self.laptop.price * self.quantity
+
+    def __str__(self):
+        return f"{self.laptop.brand} {self.laptop.model} - {self.quantity}"

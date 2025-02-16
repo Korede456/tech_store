@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from .models import CustomUser
 
+
 class CustomUserCreationForm(forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput, label="Password")
     password2 = forms.CharField(widget=forms.PasswordInput, label="Confirm Password")
@@ -17,8 +18,12 @@ class CustomUserCreationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords do not match")
         return password2
 
+
 class CustomUserLoginForm(AuthenticationForm):
-    username = forms.EmailField(widget=forms.EmailInput(attrs={"class": "form-control"}), label="Email")
+    username = forms.EmailField(
+        widget=forms.EmailInput(attrs={"class": "form-control"}), label="Email"
+    )
+
 
 class CustomUserUpdateForm(forms.ModelForm):
     class Meta:
