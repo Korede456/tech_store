@@ -6,7 +6,7 @@ import store.urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # path('user/', include('accounts.urls')),
+    path("user/", include("accounts.urls")),
     path("", include(store.urls)),
 ]
 if settings.DEBUG:

@@ -23,6 +23,14 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
+.btn-outline-primary{
+    background-color: var(--color-secondary) !important;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
 .btn-primary:hover {
     transform: scale(1.05) !important;
     box-shadow: rgb(3, 84, 3) !important;
@@ -31,6 +39,9 @@ body {
     color: var(--color-primary) !important;
 }
 .text-light {
+    color: var(--color-secondary) !important;
+}
+.navbar-toggler-icon {
     color: var(--color-secondary) !important;
 }
 

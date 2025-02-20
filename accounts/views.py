@@ -2,8 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import CustomUserCreationForm, CustomUserLoginForm, CustomUserUpdateForm
-from .models import CustomUser
+from .forms import (
+    CustomUserCreationForm,
+    CustomUserLoginForm,
+    CustomUserUpdateForm,
+)
 
 
 def register_view(request):
@@ -14,7 +17,7 @@ def register_view(request):
             user.set_password(form.cleaned_data["password1"])  # Hash password
             user.save()
             messages.success(request, "Account created successfully. Please log in.")
-            return redirect("login")
+            return redirect("user:login")
         else:
             messages.error(request, "Please correct the errors below.")
     else:
@@ -23,27 +26,33 @@ def register_view(request):
     return render(request, "accounts/register.html", {"form": form})
 
 
-def register_view(request):
+def login_view(request):
     if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
+        form = CustomUserLoginForm(request, data=request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data["password1"])  # Hash password
-            user.save()
-            messages.success(request, "Account created successfully. Please log in.")
-            return redirect("login")
+            email = form.cleaned_data["username"]  # username field is email in form
+            password = form.cleaned_data["password"]
+            user = authenticate(request, username=email, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, "Login successful!")
+                return redirect(
+                    "store:laptop_list"
+                )  # Change 'home' to your desired redirect URL
+            else:
+                messages.error(request, "Invalid email or password.")
         else:
             messages.error(request, "Please correct the errors below.")
     else:
-        form = CustomUserCreationForm()
+        form = CustomUserLoginForm()
 
-    return render(request, "accounts/register.html", {"form": form})
+    return render(request, "accounts/login.html", {"form": form})
 
 
 def logout_view(request):
     logout(request)
     messages.success(request, "You have been logged out.")
-    return redirect("login")
+    return redirect("user:login")
 
 
 @login_required
@@ -66,3 +75,6 @@ def profile_update_view(request):
 @login_required
 def profile_view(request):
     return render(request, "accounts/profile.html", {"user": request.user})
+
+
+

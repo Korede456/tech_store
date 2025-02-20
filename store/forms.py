@@ -1,5 +1,5 @@
 from django import forms
-from .models import Laptop
+from .models import Laptop, Address
 
 
 class LaptopForm(forms.ModelForm):
@@ -58,3 +58,17 @@ class LaptopForm(forms.ModelForm):
             "price": forms.NumberInput(attrs={"class": "form-control"}),
             "discount": forms.NumberInput(attrs={"class": "form-control"}),
         }
+
+class AddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        fields = ["street", "city", "state", "postal_code", "country"]
+
+        widgets = {
+            "street": forms.TextInput(attrs={"class": "form-control"}),
+            "city": forms.TextInput(attrs={"class": "form-control"}),
+            "state": forms.TextInput(attrs={"class": "form-control"}),
+            "postal_code": forms.TextInput(attrs={"class": "form-control"}),
+            "country": forms.TextInput(attrs={"class": "form-control"}),
+        }
+

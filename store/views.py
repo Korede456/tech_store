@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Laptop
-from .forms import LaptopForm
+from .forms import LaptopForm, AddressForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Laptop
+from .models import Laptop, Order, OrderItem, Cart, Address
 from .utils.cart import CartManager
+from django.http import JsonResponse
+
 
 
 def laptop_list(request):
@@ -123,3 +125,58 @@ def update_cart_item_quantity(request, item_id, action):
     cart_manager = CartManager(request.user)
     cart_manager.update_cart_item_quantity(item_id, action)
     redirect("store:cart_view")
+
+@login_required
+def delivery_info(request):
+    addresses = Address.objects.filter(user=request.user)
+    form = AddressForm()
+
+    if request.method == "POST":
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
+            return redirect("store:checkout")  # Redirect to checkout page after adding address
+
+    return render(
+        request, "store/checkout.html", {"addresses": addresses, "form": form}
+    )
+
+
+@login_required
+def checkout(request):
+    cart = get_object_or_404(Cart, user=request.user)
+    addresses = Address.objects.filter(user=request.user)
+    
+    if cart.items.count() == 0:
+        messages.error(request, "Your cart is empty.")
+        return redirect("sotre:cart_view")  # Redirect to cart page if empty
+
+    if request.method == "POST":
+        address_id = request.POST.get("address_id")
+        if not address_id:
+            messages.error(request, "Please select an address.")
+            return redirect("store:checkout")
+
+        address = get_object_or_404(Address, id=address_id, user=request.user)
+
+        # Create order
+        total_price = sum(item.total_price() for item in cart.items.all())
+        order = Order.objects.create(user=request.user, address=address, total_price=total_price)
+
+        # Move cart items to order items
+        for item in cart.items.all():
+            OrderItem.objects.create(
+                order=order,
+                laptop=item.laptop,
+                quantity=item.quantity,
+                price=item.laptop.price,  # Store price at time of order
+            )
+
+        # Clear cart after checkout
+        cart.items.all().delete()
+
+        return redirect("order_success", order_id=order.id)  # Redirect to success page
+
+    return render(request, "store/checkout.html", {"cart": cart, "addresses": addresses, "form": AddressForm()})

@@ -46,7 +46,7 @@
 
     <div class="d-flex justify-content-between align-items-center mt-4">
         <h3>Total Price: ${{ total_price }}</h3>
-        <a href="#" class="btn btn-primary">Proceed to Checkout</a>
+        <a href="{% url 'store:checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
     </div>
 
     {% else %}

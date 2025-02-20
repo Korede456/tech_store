@@ -3,36 +3,36 @@
 {% block content %}
 <div class="container mt-4">
     <form method="GET" class="row g-3">
-        <div class="col-md-4">
+        <div class="col-3">
             <div class="input-group">
                 <span class="input-group-text"><i class="bx bx-search"></i></span>
-                <input type="text" name="q" class="form-control" placeholder="Search by Model" value="{{ request.GET.q }}">
+                <input type="text" name="q" class="form-control" placeholder="Model" value="{{ request.GET.q }}">
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-3">
             <div class="input-group">
                 <span class="input-group-text"><i class="bx bx-filter-alt"></i></span>
                 <select name="brand" class="form-control">
-                    <option value="">Select Brand</option>
+                    <option value="">Brand</option>
                     {% for brand in brands %}
                         <option value="{{ brand }}" {% if request.GET.brand == brand %}selected{% endif %}>{{ brand }}</option>
                     {% endfor %}
                 </select>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-3">
             <div class="input-group">
                 <span class="input-group-text"><i class="bx bx-filter-alt"></i></span>
                 <select name="condition" class="form-control">
-                    <option value="">Select Condition</option>
+                    <option value="">Condition</option>
                     {% for condition in conditions %}
                         <option value="{{ condition }}" {% if request.GET.condition == condition %}selected{% endif %}>{{ condition }}</option>
                     {% endfor %}
                 </select>
             </div>
         </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary"><i class="bx bx-search-alt"></i> Search</button>
+        <div class="col-2">
+            <button type="submit" class="btn btn-primary"><i class="bx bx-search-alt"></i></button>
         </div>
     </form>
 

@@ -8,13 +8,13 @@
                 {% if laptop_images %}
                     <!-- Main Image -->
                     <div class="text-center">
-                        <img id="mainImage" src="{{ laptop_images.0.url }}" class="img-fluid rounded" alt="{{ laptop.model }}">
+                        <img id="mainImage" src="{{ laptop_images.0.url }}" class="img-fluid rounded mt-2" alt="{{ laptop.model }}">
                     </div>
             
                     <!-- Thumbnails -->
-                    <div class="d-flex justify-content-center mt-2">
+                    <div class="d-flex flex-wrap justify-content-evenly mt-3">
                         {% for image in laptop_images %}
-                            <img src="{{ image.url }}" class="img-thumbnail mx-1" alt="Thumbnail {{ forloop.counter }}"
+                            <img src="{{ image.url }}" class="img-thumbnail mx-1 mt-3" alt="Thumbnail {{ forloop.counter }}"
                                  style="width: 80px; height: 60px; cursor: pointer;"
                                  onclick="changeImage('{{ image.url }}')">
                         {% endfor %}

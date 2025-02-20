@@ -9,6 +9,8 @@ from .views import (
     add_to_cart,
     remove_from_cart,
     update_cart_item_quantity,
+    checkout,
+    delivery_info,
 )
 
 app_name = "store"
@@ -27,4 +29,6 @@ urlpatterns = [
         update_cart_item_quantity,
         name="update_cart_item_quantity",
     ),
+    path('checkout/', checkout, name='checkout'),
+    path('delivery/', delivery_info, name='delivery_info'),
 ]

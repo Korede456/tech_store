@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-primary text-center">Checkout</h2>
+
+    <div class="row">
+        <!-- Cart Summary -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-light">Order Summary</div>
+                <div class="card-body">
+                    {% for item in cart.items.all %}
+                    <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                        <div>
+                            <h6 class="mb-1">{{ item.laptop.brand }} {{ item.laptop.model }}</h6>
+                            <small class="text-muted">Quantity: {{ item.quantity }}</small>
+                        </div>
+                        <span class="fw-bold">₦{{ item.total_price }}</span>
+                    </div>
+                    {% endfor %}
+                    <hr>
+                    <h5 class="text-end">Total: <span class="text-primary">₦{{ order.total_price }}</span></h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delivery Address -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-light">Delivery Details</div>
+                <div class="card-body">
+                    <form method="post" >
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Select Delivery Address</label>
+                            <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addressModal">
+                                <i class="bx bx-home"></i> Add Address
+                            </button>
+                        </div>
+
+                        <!-- Hidden input to store selected address -->
+                        <input type="hidden" name="address_id" id="selectedAddress" required>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Place Order</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Address Selection Modal -->
+<div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-light">
+                <h5 class="modal-title">Select Delivery Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% if addresses %}
+                <ul class="list-group">
+                    {% for address in addresses %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ address.street }}, {{ address.city }}, {{ address.state }}</span>
+                        <button type="button" class="btn btn-outline-primary btn-sm select-address" data-id="{{ address.id }}">Select</button>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted text-center">No address found. Add a new one below.</p>
+                {% endif %}
+                <hr>
+                <h6>Add New Address</h6>
+                <form method="post" action="{% url 'store:delivery_info' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.street.label_tag }}</label>
+                        {{ form.street }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.city.label_tag }}</label>
+                        {{ form.city }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.state.label_tag }}</label>
+                        {{ form.state }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.country.label_tag }}</label>
+                        {{ form.country }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.postal_code.label_tag }}</label>
+                        {{ form.postal_code }}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Save Address</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to Select Address -->
+<script>
+document.querySelectorAll(".select-address").forEach(button => {
+    button.addEventListener("click", function () {
+        const addressId = this.getAttribute("data-id");
+        document.getElementById("selectedAddress").value = addressId;
+        document.querySelector(".btn-close").click();
+    });
+});
+</script>
+{% endblock %}

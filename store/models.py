@@ -72,6 +72,9 @@ class Cart(models.Model):
     def __str__(self):
         return f"Cart - {self.user.email if self.user else 'Guest'}"
 
+    def item_count(self):
+        return self.items.count()
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
@@ -80,6 +83,54 @@ class CartItem(models.Model):
 
     def total_price(self):
         return self.laptop.price * self.quantity
+
+    def __str__(self):
+        return f"{self.laptop.brand} {self.laptop.model} - {self.quantity}"
+
+
+class Address(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="addresses"
+    )
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    postal_code = models.CharField(max_length=20)
+    country = models.CharField(max_length=100, default="Nigeria")  # Default to Nigeria
+
+    is_default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.street}, {self.city}, {self.state}"
+
+
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("processing", "Processing"),
+        ("shipped", "Shipped"),
+        ("delivered", "Delivered"),
+        ("cancelled", "Cancelled"),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="orders"
+    )
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Order {self.id} - {self.user.email}"
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
+    laptop = models.ForeignKey(Laptop, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)  # Store price at purchase time
 
     def __str__(self):
         return f"{self.laptop.brand} {self.laptop.model} - {self.quantity}"
