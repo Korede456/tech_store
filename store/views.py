@@ -5,7 +5,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Laptop, Order, OrderItem, Cart, Address
 from .utils.cart import CartManager
-from django.http import JsonResponse
+import requests
+from django.conf import settings
+from django.urls import reverse
 
 
 
@@ -148,10 +150,10 @@ def delivery_info(request):
 def checkout(request):
     cart = get_object_or_404(Cart, user=request.user)
     addresses = Address.objects.filter(user=request.user)
-    
+
     if cart.items.count() == 0:
         messages.error(request, "Your cart is empty.")
-        return redirect("sotre:cart_view")  # Redirect to cart page if empty
+        return redirect("store:cart_view")
 
     if request.method == "POST":
         address_id = request.POST.get("address_id")
@@ -161,9 +163,16 @@ def checkout(request):
 
         address = get_object_or_404(Address, id=address_id, user=request.user)
 
-        # Create order
+        # Calculate total price
         total_price = sum(item.total_price() for item in cart.items.all())
-        order = Order.objects.create(user=request.user, address=address, total_price=total_price)
+
+        # Create an order but mark it as 'Pending Payment'
+        order = Order.objects.create(
+            user=request.user, 
+            address=address, 
+            total_price=total_price, 
+            status="Pending Payment"
+        )
 
         # Move cart items to order items
         for item in cart.items.all():
@@ -171,12 +180,78 @@ def checkout(request):
                 order=order,
                 laptop=item.laptop,
                 quantity=item.quantity,
-                price=item.laptop.price,  # Store price at time of order
+                price=item.laptop.price,
             )
 
-        # Clear cart after checkout
+        # Clear the cart
         cart.items.all().delete()
 
-        return redirect("order_success", order_id=order.id)  # Redirect to success page
+        # Redirect to Paystack Payment Page
+        return redirect(reverse("store:paystack_payment", args=[order.id]))
 
-    return render(request, "store/checkout.html", {"cart": cart, "addresses": addresses, "form": AddressForm()})
+    order_total = sum(item.total_price() for item in cart.items.all())
+    return render(request, "store/checkout.html", {"cart": cart, "addresses": addresses, "order_total": order_total})
+
+
+@login_required
+def paystack_payment(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    paystack_secret_key = settings.PAYSTACK_SECRET_KEY
+    callback_url = request.build_absolute_uri(reverse("store:paystack_callback"))
+
+    paystack_url = "https://api.paystack.co/transaction/initialize"
+    headers = {"Authorization": f"Bearer {paystack_secret_key}"}
+    data = {
+        "email": request.user.email,
+        "amount": int(order.total_price * 100),  # Convert to kobo
+        "reference": f"ORDER-{order.id}",
+        "callback_url": callback_url,
+        "currency": "NGN"
+    }
+
+    response = requests.post(paystack_url, headers=headers, json=data)
+    response_data = response.json()
+
+    if response_data.get("status") == True:
+        authorization_url = response_data["data"]["authorization_url"]
+        return redirect(authorization_url)
+    else:
+        messages.error(request, "Error connecting to Paystack. Try again.")
+        return redirect("store:checkout")
+
+
+@login_required
+def paystack_callback(request):
+    reference = request.GET.get("reference")
+    paystack_secret_key = settings.PAYSTACK_SECRET_KEY
+    verify_url = f"https://api.paystack.co/transaction/verify/{reference}"
+
+    headers = {"Authorization": f"Bearer {paystack_secret_key}"}
+    response = requests.get(verify_url, headers=headers)
+    response_data = response.json()
+
+    if response_data.get("status") == True and response_data["data"]["status"] == "success":
+        order_id = int(reference.split("-")[1])  # Extract order ID
+        order = get_object_or_404(Order, id=order_id, user=request.user)
+        order.status = "Processing"  # Update order status
+        order.save()
+
+        messages.success(request, "Payment successful! Your order is now processing.")
+        return redirect("store:order_detail", order_id=order.id)
+    else:
+        messages.error(request, "Payment failed or was canceled.")
+        return redirect("store:checkout")
+
+
+@login_required
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    order_items = OrderItem.objects.filter(order=order)
+
+    return render(request, "store/order_details.html", {"order": order, "order_items": order_items})
+
+@login_required
+def order_list(request):
+    orders = Order.objects.filter(user=request.user).order_by("-created_at")
+    return render(request, "store/order_list.html", {"orders": orders})

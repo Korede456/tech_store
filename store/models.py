@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.conf import settings
 
@@ -11,6 +12,7 @@ CONDITION_CHOICES = [
 
 
 class Laptop(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     img_1 = models.ImageField(upload_to="laptop_images/", blank=True, null=True)
     img_2 = models.ImageField(upload_to="laptop_images/", blank=True, null=True)
     img_3 = models.ImageField(upload_to="laptop_images/", blank=True, null=True)
@@ -64,6 +66,7 @@ class Laptop(models.Model):
 
 
 class Cart(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -77,6 +80,7 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
     laptop = models.ForeignKey("Laptop", on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
@@ -89,6 +93,7 @@ class CartItem(models.Model):
 
 
 class Address(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="addresses"
     )
@@ -105,6 +110,7 @@ class Address(models.Model):
 
 
 class Order(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     STATUS_CHOICES = [
         ("pending", "Pending"),
         ("processing", "Processing"),
@@ -127,6 +133,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     laptop = models.ForeignKey(Laptop, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()

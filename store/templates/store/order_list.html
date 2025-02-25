@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-primary text-center">Your Orders</h2>
+
+    {% if orders %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="bg-primary text-light">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.created_at }}</td>
+                    <td>₦{{ order.total_price }}</td>
+                    <td><span class="badge bg-info">{{ order.get_status_display }}</span></td>
+                    <td>
+                        <a href="{% url 'store:order_detail' order.id %}" class="btn btn-primary btn-sm">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-center text-muted">You have no orders yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
