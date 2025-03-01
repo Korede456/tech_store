@@ -14,6 +14,10 @@
         {% endfor %}
     </ul>
 
+    {% if order.status == 'Pending Payment' %}
+    <a href="{% url 'store:paystack_payment' order.id %}" class="btn btn-success">Complete Payment</a>
+    {% endif %}
+
     <a href="{% url 'store:orders' %}" class="btn btn-primary">View All Orders</a>
 </div>
 {% endblock %}

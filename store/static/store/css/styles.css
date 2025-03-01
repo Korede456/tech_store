@@ -44,6 +44,16 @@ body {
 .navbar-toggler-icon {
     color: var(--color-secondary) !important;
 }
+.active {
+    background-color: var(--color-secondary) !important;
+    color: var(--color-primary) !important;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: none;
+    text-decoration: none !important;
+}
+
+
 
 /* From ChatGpt */
 

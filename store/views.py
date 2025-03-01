@@ -97,14 +97,15 @@ def laptop_delete(request, pk):
 
 @login_required
 def add_to_cart(request, laptop_id):
-    cart_manager = CartManager(request.user)
+    cart_manager = CartManager(request, request.user)  # Pass request & user
     cart_manager.add_to_cart(laptop_id)
     return redirect("store:laptop_list")
 
 
+
 @login_required
 def cart_view(request):
-    cart_manager = CartManager(request.user)
+    cart_manager = CartManager(request, request.user)  # Pass request & user
     cart_items = cart_manager.get_cart_items()
     total_price = cart_manager.get_total_price()
 
@@ -113,6 +114,7 @@ def cart_view(request):
         "store/cart.html",
         {"cart_items": cart_items, "total_price": total_price},
     )
+
 
 
 @login_required
@@ -232,7 +234,7 @@ def paystack_callback(request):
     response_data = response.json()
 
     if response_data.get("status") == True and response_data["data"]["status"] == "success":
-        order_id = int(reference.split("-")[1])  # Extract order ID
+        order_id = "-".join(reference.split("-")[1:])
         order = get_object_or_404(Order, id=order_id, user=request.user)
         order.status = "Processing"  # Update order status
         order.save()

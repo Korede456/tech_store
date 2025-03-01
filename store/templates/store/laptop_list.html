@@ -46,14 +46,14 @@
                 {% endif %}
                 </a>
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ laptop.brand }} {{ laptop.model }}</h5>
-                    <p class="card-text flex-grow-1">
+                    <h5 class="card-title mt-auto">{{ laptop.brand }} {{ laptop.model }}</h5>
+                    <p class="card-text">
                         <strong><i class="bx bx-chip"></i> Processor:</strong> {{ laptop.processor }} <br>
                         <strong><i class="bx bx-memory-card"></i> RAM:</strong> {{ laptop.ram }} <br>
                         <strong><i class="bx bx-hdd"></i> Storage:</strong> {{ laptop.storage_capacity }} <br>
                         <strong><i class="bx bx-check-shield"></i> Condition:</strong> {{ laptop.condition }}
                     </p>
-                    <a href="{% url 'store:add_to_cart' laptop.id %}" class="btn btn-primary mt-auto">
+                    <a href="{% url 'store:add_to_cart' laptop.id %}" class="btn btn-primary">
                         <i class="bx bx-cart"></i> Add to Cart
                     </a>
                 </div>

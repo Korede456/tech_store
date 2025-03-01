@@ -35,8 +35,8 @@
                         {% csrf_token %}
                         <div class="mb-3">
                             <label class="form-label">Select Delivery Address</label>
-                            <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addressModal">
-                                <i class="bx bx-home"></i> Add Address
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addressModal">
+                                <i class="bx bx-plus"></i>
                             </button>
                         </div>
 
@@ -73,31 +73,40 @@
                 <p class="text-muted text-center">No address found. Add a new one below.</p>
                 {% endif %}
                 <hr>
-                <h6>Add New Address</h6>
-                <form method="post" action="{% url 'store:delivery_info' %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label class="form-label">{{ form.street.label_tag }}</label>
-                        {{ form.street }}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">{{ form.city.label_tag }}</label>
-                        {{ form.city }}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">{{ form.state.label_tag }}</label>
-                        {{ form.state }}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">{{ form.country.label_tag }}</label>
-                        {{ form.country }}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">{{ form.postal_code.label_tag }}</label>
-                        {{ form.postal_code }}
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Save Address</button>
-                </form>
+                <button type="button" class="btn btn-outline-primary w-100 mb-3" id="addNewAddressBtn">Add New Address</button>
+                <div id="newAddressForm" style="display: none;">
+                    <form method="post" action="{% url 'store:delivery_info' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label" for="id_street">Street</label>
+                            <input type="text" name="street" class="form-control" id="id_street">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="id_city">City</label>
+                            <input type="text" name="city" class="form-control" id="id_city">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="id_state">State</label>
+                            <input type="text" name="state" class="form-control" id="id_state">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="id_postal_code">Postal Code</label>
+                            <input type="text" name="postal_code" class="form-control" id="id_postal_code">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="id_country">Country</label>
+                            <input type="text" name="country" class="form-control" id="id_country">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Save Address</button>
+                    </form>
+                </div>
+
+                <script>
+                document.getElementById("addNewAddressBtn").addEventListener("click", function () {
+                    document.getElementById("newAddressForm").style.display = "block";
+                    this.style.display = "none";
+                });
+                </script>
             </div>
         </div>
     </div>

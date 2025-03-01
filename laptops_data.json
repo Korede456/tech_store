@@ -1,7 +1,7 @@
 [
     {
-       "img_1": "laptop_images/laptop2_img1.jpg",
-        "img_2": "laptop_images/laptop2_img2.jpg",
+       "img_1": "laptop_images/dell.jpeg",
+        "img_2": "laptop_images/dell2.jpeg",
         "img_3": "laptop_images/laptop2_img3.jpg",
         "img_4": "laptop_images/laptop2_img4.jpg",
         "img_5": "laptop_images/laptop2_img5.jpg",
@@ -37,8 +37,8 @@
         "available": true
     },
     {
-        "img_1": "laptop_images/laptop2_img1.jpg",
-        "img_2": "laptop_images/laptop2_img2.jpg",
+        "img_1": "laptop_images/hp.jpeg",
+        "img_2": "laptop_images/hp2.jpeg",
         "img_3": "laptop_images/laptop2_img3.jpg",
         "img_4": "laptop_images/laptop2_img4.jpg",
         "img_5": "laptop_images/laptop2_img5.jpg",
@@ -74,8 +74,8 @@
         "available": true
     },
     {
-        "img_1": "laptop_images/laptop2_img1.jpg",
-        "img_2": "laptop_images/laptop2_img2.jpg",
+        "img_1": "laptop_images/apple.jpeg",
+        "img_2": "laptop_images/apple2.jpeg",
         "img_3": "laptop_images/laptop2_img3.jpg",
         "img_4": "laptop_images/laptop2_img4.jpg",
         "img_5": "laptop_images/laptop2_img5.jpg",
@@ -111,8 +111,8 @@
         "available": true
     },
     {
-        "img_1": "laptop_images/laptop2_img1.jpg",
-        "img_2": "laptop_images/laptop2_img2.jpg",
+        "img_1": "laptop_images/lenovo.jpeg",
+        "img_2": "laptop_images/lenovo2.jpeg",
         "img_3": "laptop_images/laptop2_img3.jpg",
         "img_4": "laptop_images/laptop2_img4.jpg",
         "img_5": "laptop_images/laptop2_img5.jpg",
@@ -148,8 +148,8 @@
         "available": true
     },
     {
-        "img_1": "laptop_images/laptop2_img1.jpg",
-        "img_2": "laptop_images/laptop2_img2.jpg",
+        "img_1": "laptop_images/asus.jpeg",
+        "img_2": "laptop_images/asus2.jpeg",
         "img_3": "laptop_images/laptop2_img3.jpg",
         "img_4": "laptop_images/laptop2_img4.jpg",
         "img_5": "laptop_images/laptop2_img5.jpg",
