@@ -63,7 +63,7 @@ def profile_update_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Profile updated successfully.")
-            return redirect("profile")
+            return redirect("user:profile")
         else:
             messages.error(request, "Please correct the errors below.")
     else:
